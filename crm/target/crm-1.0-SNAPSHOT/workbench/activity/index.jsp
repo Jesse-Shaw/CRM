@@ -19,7 +19,29 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <script type="text/javascript">
 
 	$(function(){
-		
+		$("#addBtn").click(function (){
+			/*
+			操作模态窗口的方式
+			需要操作模态窗口的jquery对象，调用modal方法，为该方法传递参数 show：打开模态窗口， hide：关闭模态窗口
+			 */
+			//走后台，目的是为了取得用户信息列表，ajax请求
+			$.ajax({
+				url:"workbench/activity/getUserList.do",
+				data:{},
+				type:"get",
+				dataType:"json",
+				success:function (data){
+					var html="";
+					$.each(data,function (i,n){
+						html+="<option value='"+n.id+"'>"+n.name+"</option>"
+					})
+					$("#create-marketActivityOwner").html(html);
+					//所有者下拉框处理完毕后，展现模态窗口
+					$("#createActivityModal").modal("show");
+				}
+			})
+
+		})
 		
 		
 	});
@@ -46,9 +68,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-marketActivityOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+
 								</select>
 							</div>
                             <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
@@ -212,8 +232,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					表示触发该按钮，将要打开一个模态窗口
 					data-target="#createActivityModal"
 					表示要打开哪个模态窗口，通过#id的形式找到该窗口
+					现在以属性和属性值的方式写在了button元素中，用来打开模糊窗口，但是这样无法对按钮进行功能扩充
+					所以触发模态窗口的操作，不要写死在元素中要采用js代码去控制
 					--%>
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createActivityModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>

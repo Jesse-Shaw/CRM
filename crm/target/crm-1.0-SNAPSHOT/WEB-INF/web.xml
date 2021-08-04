@@ -7,6 +7,14 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+    <!--
+    add/create:跳转到添加页，或者打开添加操作的模态窗口
+    save：执行添加操作
+    edit：跳转到修改页，或者打开修改操作的模态窗口
+    update：执行修改操作
+    get：执行查询操作
+
+    -->
     <filter>
         <filter-name>EncodingFiler</filter-name>
         <filter-class>com.bjpowernode.crm.web.filter.EncodingFiler</filter-class>
@@ -41,7 +49,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ActivityController</servlet-name>
-        <url-pattern>/workbench/activity/xxx.do</url-pattern>
+        <url-pattern>/workbench/activity/getUserList.do</url-pattern>
     </servlet-mapping>
 
 </web-app>

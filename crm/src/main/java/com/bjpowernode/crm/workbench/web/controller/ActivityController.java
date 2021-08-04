@@ -6,6 +6,9 @@ import com.bjpowernode.crm.settings.service.impl.UserServiceImpl;
 import com.bjpowernode.crm.utils.MD5Util;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
+import com.bjpowernode.crm.utils.SqlSessionUtil;
+import com.bjpowernode.crm.workbench.service.ActivityService;
+import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ActivityController extends HttpServlet {
@@ -20,11 +24,20 @@ public class ActivityController extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("进入到市场活动控制器");
         String path = request.getServletPath();
-        if ("/workbench/activity/login.do".equals(path)){
+        if ("/workbench/activity/getUserList.do".equals(path)){
+            getUserList(request,response);
         }
         else if ("/workbench/activity/xxx.do".equals(path)){
 
         }
+    }
+
+    private void getUserList(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("取得用户信息列表");
+        UserService service= (UserService) ServiceFactory.getService(new UserServiceImpl());
+        List<User> userList = service.getUserList();
+        PrintJson.printJsonObj(response,userList);
+
     }
 
 }
