@@ -3,10 +3,8 @@ package com.bjpowernode.crm.workbench.web.controller;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.UserService;
 import com.bjpowernode.crm.settings.service.impl.UserServiceImpl;
-import com.bjpowernode.crm.utils.MD5Util;
-import com.bjpowernode.crm.utils.PrintJson;
-import com.bjpowernode.crm.utils.ServiceFactory;
-import com.bjpowernode.crm.utils.SqlSessionUtil;
+import com.bjpowernode.crm.utils.*;
+import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
 
@@ -27,17 +25,41 @@ public class ActivityController extends HttpServlet {
         if ("/workbench/activity/getUserList.do".equals(path)){
             getUserList(request,response);
         }
-        else if ("/workbench/activity/xxx.do".equals(path)){
-
+        else if ("/workbench/activity/save.do".equals(path)){
+            save(request,response);
         }
     }
 
     private void getUserList(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("取得用户信息列表");
-        UserService service= (UserService) ServiceFactory.getService(new UserServiceImpl());
-        List<User> userList = service.getUserList();
+        UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
+        List<User> userList = userService.getUserList();
         PrintJson.printJsonObj(response,userList);
-
+    }
+    private void save(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("添加市场活动");
+        String id= UUIDUtil.getUUID();
+        String owner= request.getParameter("owner");
+        String name= request.getParameter("name");
+        String startDate= request.getParameter("startDate");
+        String endDate= request.getParameter("endDate");
+        String cost= request.getParameter("cost");
+        String description= request.getParameter("description");
+        String createTime= DateTimeUtil.getSysTime();
+        String createBy= ((User)request.getSession().getAttribute("user")).getName();
+        Activity activity= new Activity();
+        activity.setCost(cost);
+        activity.setCreateBy(createBy);
+        activity.setCreateTime(createTime);
+        activity.setDescription(description);
+        activity.setEndDate(endDate);
+        activity.setStartDate(startDate);
+        activity.setName(name);
+        activity.setOwner(owner);
+        activity.setId(id);
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = activityService.save(activity);
+        PrintJson.printJsonFlag(response,flag);
     }
 
 }
