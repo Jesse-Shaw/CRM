@@ -87,9 +87,65 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 			})
 		})
-		
-		
+		//页面加载完毕后，需要触发一个方法 pageList
+		pageList(1,2);
+		//为查询事件按钮绑定时间，触发pageList方法
+		$("#searchBtn").click(function (){
+			pageList(1,2);
+		})
+
 	});
+	/*
+	   对于所有的关系型数据库，做前端的分页相关操作的基础组件就是pageNo和pageSize
+	   pageNo:页码
+	   pageSize：每页展示的记录库
+       pageList方法：就是发出ajax请求，从后台取得最新的市场活动信息列表数据，
+       通过相应回来的数据，局部刷新市场活动信息列表
+       我们都在哪些情况下，需要调用pageList方法
+       1）点击左侧菜单中的“市场活动”超链接
+       2）添加，修改，删除市场活动后，需要刷新
+       3）查询时候
+       4）点击分页组件的时候
+       以上为pageList制定了6个入口
+	*/
+	   function pageList(pageNum,pageSize){
+		   $.ajax({
+			   url:"workbench/activity/pageList.do",
+			   data:{
+				   "pageNum":pageNum,
+				   "pageSize":pageSize,
+				   "name":$.trim($("#search-name").val()),
+				   "owner":$.trim($("#search-owner").val()),
+				   "startDate":$.trim($("#search-startDate").val()),
+				   "endDate":$.trim($("#search-endDate").val()),
+
+
+			   },
+			   type:"",
+			   dataType:"json",
+			   success:function (data){
+			   	/*
+			   	          int total       List<Activity> aList
+			   	  data{"total:100,"dataList":[市场活动1],{2},{3}}}
+			   	 */
+				   var html="";','
+				   $.each(data.dataList,function (i,n){
+
+					    html+= '<tr class="active">';
+                        html+= '<td><input type="checkbox" value="n.id" /></td>';
+                        html+= '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
+                        html+= '<td>'+n.owner+'</td>';
+                        html+= '<td>'+n.startDate+'</td>';
+                        html+= '<td>'+n.endDate+'</td>';
+                        html+= '</tr>';
+				   })
+				   $("#activityBody").html(html);
+
+
+			   }
+		   })
+
+	   }
 	
 </script>
 </head>
@@ -244,14 +300,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="search-name">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="search-owner">
 				    </div>
 				  </div>
 
@@ -259,17 +315,17 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">开始日期</div>
-					  <input class="form-control" type="text" id="startTime" />
+					  <input class="form-control" type="text" id="search-startDate" />
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">结束日期</div>
-					  <input class="form-control" type="text" id="endTime">
+					  <input class="form-control" type="text" id="search-endDate">
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" id="searchBtn" class="btn btn-default">查询</button>
 				  
 				</form>
 			</div>
@@ -300,8 +356,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<td>结束日期</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr class="active">
+					<tbody id="activityBody">
+<%--						<tr class="active">
 							<td><input type="checkbox" /></td>
 							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/detail.jsp';">发传单</a></td>
                             <td>zhangsan</td>
@@ -313,7 +369,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/detail.jsp';">发传单</a></td>
                             <td>zhangsan</td>
                             <td>2020-10-10</td>
-                            <td>2020-10-20</td>
+                            <td>2020-10-20</td>--%>
                         </tr>
 					</tbody>
 				</table>

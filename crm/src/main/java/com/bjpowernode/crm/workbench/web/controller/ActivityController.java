@@ -28,6 +28,37 @@ public class ActivityController extends HttpServlet {
         else if ("/workbench/activity/save.do".equals(path)){
             save(request,response);
         }
+        else if ("/workbench/activity/pageList.do".equals(path)){
+            pageList(request,response);
+        }
+    }
+
+    private void pageList(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("进入查询市场活动信息列表的操作（结合条件查询和分页查询）");
+        String name= request.getParameter("name");
+        String owner= request.getParameter("owner");
+        String startDate= request.getParameter("startDate");
+        String endDate= request.getParameter("endDate");
+        //每页展现的记录数
+        String pageNumStr= request.getParameter("pageNum");
+        int pageNum = Integer.valueOf(pageNumStr);
+        //计算出略过的记录数
+        String pageSizeStr= request.getParameter("pageSize");
+        int pageSize = Integer.valueOf(pageSizeStr);
+        int skipCount =(pageNum-1)*pageSize;
+        //创建一个map
+        Map<String,Object> map = new HashMap<>();
+        map.put("name",name);
+        map.put("owner",owner);
+        map.put("startDate",startDate);
+        map.put("endDate",endDate);
+        map.put("pageSize",pageSize);
+        map.put("skipCount",skipCount);
+        //Service层调用pageList方法，返回一个VO对象给controller去返回给前端
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        activityService.pageList(map);
+
+
     }
 
     private void getUserList(HttpServletRequest request, HttpServletResponse response) {
