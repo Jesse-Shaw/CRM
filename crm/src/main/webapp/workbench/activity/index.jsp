@@ -121,16 +121,15 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 
 			   },
-			   type:"",
+			   type:"get",
 			   dataType:"json",
 			   success:function (data){
 			   	/*
 			   	          int total       List<Activity> aList
 			   	  data{"total:100,"dataList":[市场活动1],{2},{3}}}
 			   	 */
-				   var html="";','
+				   var html="";
 				   $.each(data.dataList,function (i,n){
-
 					    html+= '<tr class="active">';
                         html+= '<td><input type="checkbox" value="n.id" /></td>';
                         html+= '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
@@ -140,8 +139,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                         html+= '</tr>';
 				   })
 				   $("#activityBody").html(html);
-
-
 			   }
 		   })
 

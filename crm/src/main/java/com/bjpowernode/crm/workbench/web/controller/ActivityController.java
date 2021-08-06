@@ -1,5 +1,6 @@
 package com.bjpowernode.crm.workbench.web.controller;
 
+import com.bjpowernode.crm.PaginationVO;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.UserService;
 import com.bjpowernode.crm.settings.service.impl.UserServiceImpl;
@@ -56,7 +57,8 @@ public class ActivityController extends HttpServlet {
         map.put("skipCount",skipCount);
         //Service层调用pageList方法，返回一个VO对象给controller去返回给前端
         ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
-        activityService.pageList(map);
+       PaginationVO<Activity> paginationVO = activityService.pageList(map);
+       PrintJson.printJsonObj(response,paginationVO);
 
 
     }
