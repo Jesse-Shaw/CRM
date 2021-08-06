@@ -14,14 +14,14 @@ import java.util.Map;
 
 public class UserServiceImpl implements UserService {
 
-    private UserDao userdao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
+    private UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
 
     @Override
     public User login(String loginAct, String loginPwd, String ip) throws LoginException {
         Map<String,String> map = new HashMap<>();
         map.put("loginAct",loginAct);
         map.put("loginPwd",loginPwd);
-        User user = userdao.login(map);
+        User user = userDao.login(map);
         if (user == null){
             throw new LoginException("用户名或者密码错误");
         }
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUserList() {
-       List<User> userList= userdao.getUserList();
+       List<User> userList= userDao.getUserList();
        return userList;
     }
 }

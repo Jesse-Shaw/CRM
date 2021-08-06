@@ -35,6 +35,23 @@ public class ActivityController extends HttpServlet {
         else if ("/workbench/activity/delete.do".equals(path)){
             delete(request,response);
         }
+        else if ("/workbench/activity/getUserListAndActivity.do".equals(path)){
+            getUserListAndActivity(request,response);
+        }
+    }
+
+    private void getUserListAndActivity(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("进入到查询用户信息列表和根据市场活动id查询单挑记录的操作");
+        String id = request.getParameter("id");
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        /*
+        总结：controller调用service的方法，返回值应该是什么
+              决定是前端需要的是什么
+              前端需要ulist和a（activity）
+              以上两项信息，复用率不高，我们选择使用map来打包这两项信息
+        */
+        Map<String,Object> map = activityService.getUserListAndActivity(id);
+        PrintJson.printJsonObj(response,map);
     }
 
     private void delete(HttpServletRequest request, HttpServletResponse response) {

@@ -43,7 +43,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				type:"get",
 				dataType:"json",
 				success:function (data){
-					var html="";
+					var html="<option></option>";
 					$.each(data,function (i,n){
 						html+="<option value='"+n.id+"'>"+n.name+"</option>"
 					})
@@ -182,6 +182,47 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 			}
 
+		})
+
+		//修改市场活动
+		$("#editBtn").click(function (){
+			var $xz = $("input[name=xz]:checked");
+			if($xz.length==0){
+				alert("请选择要修改的记录")
+			} else if($xz.length>1){
+				alert("请选择一条记录修改")
+			}else{
+				var id = $xz.val();
+				$.ajax({
+					url:"workbench/activity/getUserListAndActivity.do",
+					data:{"id":id},
+					type:"get",
+					dataType:"json",
+					success:function (data){
+						/*
+						data 用户列表 市场活动对象
+						*/
+						//处理所有者的下拉框
+						var html="<option></option>"
+						$.each(data.userList,function (i,n){
+							html+="<option value='"+n.id+"'>"+n.name+"</option>";
+						})
+						$("#edit-owner").html(html);
+						//处理单条的activity
+						$("#edit-id").val(data.activity.id)
+						$("#edit-name").val(data.activity.name)
+						$("#edit-owner").val(data.activity.owner)
+						$("#edit-startDate").val(data.activity.startDate)
+						$("#edit-endDate").val(data.activity.endDate)
+						$("#edit-cost").val(data.activity.cost)
+						$("#edit-description").val(data.activity.description)
+						//
+						$("#editActivityModal").modal("show");
+					}
+				})
+
+
+			}
 		})
 
 
@@ -346,30 +387,28 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<div class="modal-body">
 				
 					<form class="form-horizontal" role="form">
-					
+						<input type="hidden" id="edit-id"/>
 						<div class="form-group">
 							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="edit-marketActivityOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="edit-owner">
+
 								</select>
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                                <input type="text" class="form-control" id="edit-name" value="发传单">
                             </div>
 						</div>
 
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+								<input type="text" class="form-control time" id="edit-startDate" value="2020-10-10">
 							</div>
 							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+								<input type="text" class="form-control time" id="edit-endDate" value="2020-10-20">
 							</div>
 						</div>
 						
@@ -383,7 +422,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+								<%--
+								关于文本域textarea，一定是标签对状态
+								（1）一定是要以标签对的形式呈现，正常状态要紧紧挨着，
+								（2）textarea虽然是以标签对的形式来呈现的，但是它也是属于表单元素范畴，取值和赋值不能用.html
+								    要用val（）
+								--%>
+								<textarea class="form-control" rows="3" id="edit-description"></textarea>
 							</div>
 						</div>
 						
@@ -392,7 +437,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" class="btn btn-primary" id="updateBtn">更新</button>
 				</div>
 			</div>
 		</div>

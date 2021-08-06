@@ -1,18 +1,22 @@
 package com.bjpowernode.crm.workbench.service.impl;
 
 import com.bjpowernode.crm.PaginationVO;
+import com.bjpowernode.crm.settings.dao.UserDao;
+import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.utils.SqlSessionUtil;
 import com.bjpowernode.crm.workbench.dao.ActivityDao;
 import com.bjpowernode.crm.workbench.dao.ActivityRemarkDao;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ActivityServiceImpl implements ActivityService {
     ActivityDao activityDao = SqlSessionUtil.getSqlSession().getMapper(ActivityDao.class);
     ActivityRemarkDao activityRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
+    UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
 
     @Override
     public boolean save(Activity activity) {
@@ -29,7 +33,7 @@ public class ActivityServiceImpl implements ActivityService {
         //取得total
         int total = activityDao.getTotalByCondition(map);
         //取得dataList
-        List<Activity> dataList = activityDao.getActivityByCondition(map);
+        List<Activity> dataList = activityDao.getActivityListByCondition(map);
         //将total和dataList封装到VO中返回
         PaginationVO<Activity> paginationVO= new PaginationVO<>();
         paginationVO.setTotal(total);
@@ -53,5 +57,16 @@ public class ActivityServiceImpl implements ActivityService {
             flag=false;
         }
         return flag;
+    }
+
+    @Override
+    public Map<String, Object> getUserListAndActivity(String id) {
+        //取得userList 和activity，将两项打包到map中，返回map
+        List<User> userList= userDao.getUserList();
+       Activity activity = activityDao.getActivityById(id);
+       Map<String,Object> map = new HashMap<>();
+       map.put("userList",userList);
+       map.put("activity",activity);
+       return map;
     }
 }
