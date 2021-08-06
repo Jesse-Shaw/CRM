@@ -7,6 +7,7 @@ import com.bjpowernode.crm.utils.SqlSessionUtil;
 import com.bjpowernode.crm.workbench.dao.ActivityDao;
 import com.bjpowernode.crm.workbench.dao.ActivityRemarkDao;
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 
 import java.util.HashMap;
@@ -77,5 +78,27 @@ public class ActivityServiceImpl implements ActivityService {
             flag=false;
         }
         return flag;
+    }
+
+    @Override
+    public Activity detail(String id) {
+      Activity activity =  activityDao.detail(id);
+      return activity;
+    }
+
+    @Override
+    public List<ActivityRemark> getRemarkListByAid(String activityId) {
+        List<ActivityRemark> activityRemarkList =activityRemarkDao. getRemarkListByAid(activityId);
+        return activityRemarkList;
+    }
+
+    @Override
+    public boolean deleteRemark(String id) {
+       boolean flag = true;
+       int count = activityRemarkDao.deleteRemarkById(id);
+       if (count==0){
+           flag=false;
+       }
+       return flag;
     }
 }

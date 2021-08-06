@@ -6,6 +6,7 @@ import com.bjpowernode.crm.settings.service.UserService;
 import com.bjpowernode.crm.settings.service.impl.UserServiceImpl;
 import com.bjpowernode.crm.utils.*;
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
 
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +46,69 @@ public class ActivityController extends HttpServlet {
         else if ("/workbench/activity/detail.do".equals(path)){
             detail(request,response);
         }
+        else if ("/workbench/activity/getRemarkListByAid.do".equals(path)){
+            getRemarkListByAid(request,response);
+        }
+        else if ("/workbench/activity/deleteRemark.do".equals(path)) {
+            deleteRemark(request, response);
+        }
+        else if ("/workbench/activity/saveRemark.do".equals(path)) {
+            saveRemark(request, response);
+        }
+
     }
 
-    private void detail(HttpServletRequest request, HttpServletResponse response) {
+    private void saveRemark(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("执行添加备注的操作");
+        String noteContent = request.getParameter("noteContent");
+        String activityId = request.getParameter("activityId ");
+        String id =UUIDUtil.getUUID();
+        String createTime= DateTimeUtil.getSysTime();
+        String createBy= ((User)request.getSession().getAttribute("user")).getName();
+        String editFlag="0";
+        ActivityRemark activityRemark = new ActivityRemark();
+        activityRemark.setId(id);
+        activityRemark.setNoteContent(noteContent);
+        activityRemark.setActivityId(activityId);
+        activityRemark.setCreateBy(createBy);
+        activityRemark.setCreateTime(createTime);
+        activityRemark.setEditFlag(editFlag);
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag =activityService.saveRemark(activityRemark);
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("activityRemark",activityRemark);
+        PrintJson.printJsonObj(response,map);
+
+    }
+
+    private void deleteRemark(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("删除备注操作");
+        String id = request.getParameter("id");
+        ActivityService activityService= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = activityService.deleteRemark(id);
+        PrintJson.printJsonFlag(response,flag);
+
+
+    }
+
+    private void getRemarkListByAid(HttpServletRequest request, HttpServletResponse response) {
+        String activityId = request.getParameter("activityId");
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        List<ActivityRemark> activityRemarkList = activityService.getRemarkListByAid(activityId);
+        PrintJson.printJsonObj(response,activityRemarkList);
+
+
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("跳转到详细信息页的操作");
+        String id = request.getParameter("id");
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        Activity activity =activityService.detail(id);
+        request.setAttribute("activity",activity);
+        request.getRequestDispatcher("/workbench/activity/detail.jsp").forward(request,response);
+
     }
 
     private void update(HttpServletRequest request, HttpServletResponse response) {
