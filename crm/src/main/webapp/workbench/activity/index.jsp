@@ -91,8 +91,11 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				}
 			})
 		})
+
+
 		//页面加载完毕后，需要触发一个方法 pageList
 		pageList(1,2);
+		//查询的日期插件
 		$("#search-startDate").click(function (){
 			$(".time").datetimepicker({
 				minView: "month",
@@ -113,6 +116,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				pickerPosition: "bottom-left"
 			});
 		})
+
+
 		//为查询事件按钮绑定时间，触发pageList方法
 		$("#searchBtn").click(function (){
 			/*
@@ -124,6 +129,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			$("#hidden-endDate").val($.trim($("#search-endDate").val()));
 			pageList(1,2);
 		})
+
+
 		//全选框的处理
 		$("#qx").click(function (){
 			$("input[name=xz]").prop("checked",this.checked);
@@ -134,6 +141,50 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			//判断一下子选中状态与子数量的大小，相等即触发全选框选中事件
 			$("#qx").prop("checked",$("input[name=xz]").length==$("input[name=xz]:checked").length)
 		})
+
+		//删除市场活动
+		$("#deleteBtn").click(function (){
+			var $xz = $("input[name=xz]:checked");
+			if($xz.length==0){
+				alert("请选择要删除的记录")
+			}else {
+				if(confirm("确定删除所选记录吗")){
+					//采用传统的id=xxx&&id=xxx
+					//拼接参数
+					var param="";
+					for (var i=0;i<$xz.length;i++){
+						param+="id="+$($xz[i]).val();
+						if(i<$xz.length-1) {
+							param += "&";
+						}
+					}
+					$.ajax({
+						url:"workbench/activity/delete.do",
+						data:param,
+						type:"post",
+						dataType:"json",
+						success:function (data){
+							/*
+                            data:success
+                            */
+							if(data.success){
+								alert("成功删除所选记录")
+								//删除成功后刷新页面
+								pageList(1,2)
+							}
+							else {
+								alert("删除市场活动失败")
+							}
+						}
+					})
+
+				}
+
+			}
+
+		})
+
+
 
 	});
 	/*
@@ -150,6 +201,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
        以上为pageList制定了6个入口
 	*/
 	   function pageList(pageNum,pageSize){
+	   	//将全选框的勾干掉
+		   $("#qx").prop("checked",false)
 	   	//在查询前，将隐藏域中保存的信息取出来，重新赋予到搜索框中
 		   $("#search-name").val($.trim($("#hidden-name").val()));
 		   $("#search-owner").val($.trim($("#hidden-owner").val()));
@@ -175,7 +228,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				   var html="";
 				   $.each(data.dataList,function (i,n){
 					    html+= '<tr class="active">';
-                        html+= '<td><input type="checkbox" name="xz" value="n.id" /></td>';
+                        html+= '<td><input type="checkbox" name="xz" value="'+n.id+'" /></td>';
                         html+= '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
                         html+= '<td>'+n.owner+'</td>';
                         html+= '<td>'+n.startDate+'</td>';
@@ -404,8 +457,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					所以触发模态窗口的操作，不要写死在元素中要采用js代码去控制
 					--%>
 				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 			</div>
