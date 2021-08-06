@@ -38,6 +38,44 @@ public class ActivityController extends HttpServlet {
         else if ("/workbench/activity/getUserListAndActivity.do".equals(path)){
             getUserListAndActivity(request,response);
         }
+        else if ("/workbench/activity/update.do".equals(path)){
+            update(request,response);
+        }
+        else if ("/workbench/activity/detail.do".equals(path)){
+            detail(request,response);
+        }
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("跳转到详细信息页的操作");
+    }
+
+    private void update(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("修改市场活动");
+        String id= request.getParameter("id");
+        String owner= request.getParameter("owner");
+        String name= request.getParameter("name");
+        String startDate= request.getParameter("startDate");
+        String endDate= request.getParameter("endDate");
+        String cost= request.getParameter("cost");
+        String description= request.getParameter("description");
+        String editTime= DateTimeUtil.getSysTime();
+        String editBy= ((User)request.getSession().getAttribute("user")).getName();
+        Activity activity= new Activity();
+        activity.setCost(cost);
+        activity.setEditBy(editBy);
+        activity.setEditTime(editTime);
+        activity.setDescription(description);
+        activity.setEndDate(endDate);
+        activity.setStartDate(startDate);
+        activity.setName(name);
+        activity.setOwner(owner);
+        activity.setId(id);
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = activityService.update(activity);
+        PrintJson.printJsonFlag(response,flag);
+
+
     }
 
     private void getUserListAndActivity(HttpServletRequest request, HttpServletResponse response) {

@@ -77,12 +77,21 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					if(data.success){
 						//添加成功后
 						//刷新市场活动信息列表（局部刷新）
-
+						/*
+						$("#activityPage").bs_pagination('getOption', 'currentPage')
+						表示操作后停留在当前页
+						$("#activityPage").bs_pagination('getOption', 'rowsPerPage')
+						表示操作后维持已经蛇者好的每页展现的记录
+						*/
+						pageList(1
+								,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
 						//清空已经填入的数据
 						//reset方法不能用，需要将jquery对象转换为原生js dom对象；
 						//jquery对象与dom对象的互相转换   jquery对象遍历数组后就是dom对象，dom对象加上$(dom)就是jquery对象
-						//$("#activityAddForm")[0].reset();
+						$("#activityAddForm")[0].reset();
 						//关闭添加操作的模态窗口
+
+
 						$("#createActivityModal").modal("hide");
 					}
 					else {
@@ -94,7 +103,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 
 		//页面加载完毕后，需要触发一个方法 pageList
-		pageList(1,2);
+		pageList(1,5);
 		//查询的日期插件
 		$("#search-startDate").click(function (){
 			$(".time").datetimepicker({
@@ -170,7 +179,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							if(data.success){
 								alert("成功删除所选记录")
 								//删除成功后刷新页面
-								pageList(1,2)
+								pageList(1
+										,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
 							}
 							else {
 								alert("删除市场活动失败")
@@ -216,13 +226,52 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						$("#edit-endDate").val(data.activity.endDate)
 						$("#edit-cost").val(data.activity.cost)
 						$("#edit-description").val(data.activity.description)
-						//
+						//展示已经获取现有信息并准备更新的模态窗口，
 						$("#editActivityModal").modal("show");
 					}
 				})
-
-
 			}
+		})
+		//为更新按钮绑定时间，执行更新操作
+		/*
+		  在实际项目开发中，一定是按照先做添加再做修改的顺序，为了节省开发时间，修改操作一般copy添加操作
+
+		*/
+		$("#updateBtn").click(function (){
+			$.ajax({
+				url:"workbench/activity/update.do",
+				data:{
+					id:$.trim($("#edit-id").val()),
+					owner:$.trim($("#edit-owner").val()),
+					name:$.trim($("#edit-name").val()),
+					startDate:$.trim($("#edit-startDate").val()),
+					endDate:$.trim($("#edit-endDate").val()),
+					cost:$.trim($("#edit-cost").val()),
+					description:$.trim($("#edit-description").val()),
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data){
+					//返回 data{"success":true/false}
+					if(data.success){
+						pageList($("#activityPage").bs_pagination('getOption', 'currentPage')
+								,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+						//添加成功后
+						//刷新市场活动信息列表（局部刷新）
+						//清空已经填入的数据
+						//reset方法不能用，需要将jquery对象转换为原生js dom对象；
+						//jquery对象与dom对象的互相转换   jquery对象遍历数组后就是dom对象，dom对象加上$(dom)就是jquery对象
+						//$("#activityAddForm")[0].reset();
+						//关闭添加操作的模态窗口
+						$("#editActivityModal").modal("hide");
+					}
+					else {
+						alert("修改市场活动失败")
+					}
+				}
+			})
+
+
 		})
 
 
@@ -270,7 +319,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				   $.each(data.dataList,function (i,n){
 					    html+= '<tr class="active">';
                         html+= '<td><input type="checkbox" name="xz" value="'+n.id+'" /></td>';
-                        html+= '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
+                        html+= '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.do?id='+n.id+'\';">'+n.name+'</a></td>';
                         html+= '<td>'+n.owner+'</td>';
                         html+= '<td>'+n.startDate+'</td>';
                         html+= '<td>'+n.endDate+'</td>';

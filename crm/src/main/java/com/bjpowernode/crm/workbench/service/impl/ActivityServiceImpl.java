@@ -69,4 +69,13 @@ public class ActivityServiceImpl implements ActivityService {
        map.put("activity",activity);
        return map;
     }
+    @Override
+    public boolean update(Activity activity) {
+        boolean flag = true;
+        int count = activityDao.update(activity);
+        if (count!=1){
+            flag=false;
+        }
+        return flag;
+    }
 }
