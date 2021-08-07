@@ -216,6 +216,73 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
     </div>
 
     <!-- 修改市场活动的模态窗口已做过 -->
+	<div class="modal fade" id="editActivityModal" role="dialog">
+		<div class="modal-dialog" role="document" style="width: 85%;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel2">修改市场活动</h4>
+				</div>
+				<div class="modal-body">
+
+					<form class="form-horizontal" role="form">
+						<input type="hidden" id="edit-id"/>
+						<div class="form-group">
+							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<div class="col-sm-10" style="width: 300px;">
+								<select class="form-control" id="edit-owner">
+
+								</select>
+							</div>
+							<label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="edit-name" value="发传单">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control time" id="edit-startDate" value="2020-10-10">
+							</div>
+							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control time" id="edit-endDate" value="2020-10-20">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="edit-cost" value="5,000">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
+							<div class="col-sm-10" style="width: 81%;">
+								<%--
+								关于文本域textarea，一定是标签对状态
+								（1）一定是要以标签对的形式呈现，正常状态要紧紧挨着，
+								（2）textarea虽然是以标签对的形式来呈现的，但是它也是属于表单元素范畴，取值和赋值不能用.html
+								    要用val（）
+								--%>
+								<textarea class="form-control" rows="3" id="edit-description"></textarea>
+							</div>
+						</div>
+
+					</form>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="updateBtn">更新</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- 返回按钮 -->
 	<div style="position: relative; top: 35px; left: 10px;">
