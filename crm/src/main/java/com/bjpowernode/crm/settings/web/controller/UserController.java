@@ -43,6 +43,7 @@ public class UserController extends HttpServlet {
         //调用Service的login方法
         try {
             User user =service.login(loginAct,loginPwd,ip);
+            //将当前用户登录信息保存到session中
             request.getSession().setAttribute("user",user);
             //如果程序执行到此处，说明业务层没有给controller抛出任何异常
             //需要给前端返回{"success":true},调用json工具给前端返回

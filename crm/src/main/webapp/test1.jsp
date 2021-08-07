@@ -25,6 +25,34 @@
             success:function (data){
             }
         })
+        $(".time").datetimepicker({
+            minView: "month",
+            language:  'zh-CN',
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayBtn: true,
+            pickerPosition: "bottom-left"
+        });
+        id
+        fullname
+        appellation
+        owner
+        company
+        job
+        email
+        phone
+        website
+        mphone
+        state
+        source
+        createBy
+        createTime
+        editBy
+        editTime
+        description
+        contactSummary
+        nextContactTime
+        address
     </script>
 </head>
 <body>
