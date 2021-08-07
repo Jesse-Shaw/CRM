@@ -61,7 +61,7 @@ public class ActivityController extends HttpServlet {
     private void saveRemark(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("执行添加备注的操作");
         String noteContent = request.getParameter("noteContent");
-        String activityId = request.getParameter("activityId ");
+        String activityId = request.getParameter("activityId");
         String id =UUIDUtil.getUUID();
         String createTime= DateTimeUtil.getSysTime();
         String createBy= ((User)request.getSession().getAttribute("user")).getName();

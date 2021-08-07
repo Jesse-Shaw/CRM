@@ -16,7 +16,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 	//默认情况下取消和保存按钮是隐藏的
 	var cancelAndSaveBtnDefault = true;
-	
 	$(function(){
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
@@ -27,7 +26,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				cancelAndSaveBtnDefault = false;
 			}
 		});
-		
 		$("#cancelBtn").click(function(){
 			//显示
 			$("#cancelAndSaveBtn").hide();
@@ -51,8 +49,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
-
-
 		//页面加载完毕后，展现该市场活动关联的备注信息列表
 		showRemarkList();
 		$("#remarkBody").on("mouseover",".remarkDiv",function(){
@@ -66,7 +62,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			$.ajax({
 				url:"workbench/activity/saveRemark.do",
 				data:{"noteContent":$.trim($("#remark").val()),
-					"activityId":"${activity.id}"
+					  "activityId":"${activity.id}"
 				},
 				type:"post",
 				dataType:"json",
@@ -76,6 +72,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					*
 					* */
 					if(data.success){
+						$("#remark").val("")
 						alert("添加备注成功")
 						//新增一个新的备注div区域
 						var html="";
@@ -92,8 +89,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						html += '</div>';
 						html += '</div>';
 						$("#remarkDiv").before(html);
-
-
 					}else {
 						alert("添加备注失败")
 					}
@@ -101,8 +96,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			})
 
 		})
-
-
 	});
 	function showRemarkList(){
 
@@ -125,7 +118,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					html += '<h5>'+n.noteContent+'</h5>';
 					html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> '+(n.editFlag==0?n.createTime:n.editTime)+' 由'+(n.editFlag==0?n.createBy:n.editBy)+' </small>';
 					html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
-					html += '<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
+					html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+n.id+'\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
 					html += '&nbsp;&nbsp;&nbsp;&nbsp;';
 					html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\''+n.id+'\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>';
 					html += '</div>';
@@ -152,7 +145,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				}
 			}
 		})
-
+	}
+	function editRemark(id){
+		alert(id)
 	}
 	
 </script>
