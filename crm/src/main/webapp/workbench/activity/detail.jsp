@@ -96,6 +96,29 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			})
 
 		})
+		//为更新备注按钮绑定时间
+		$("#updateRemarkBtn").click(function (){
+			var id = $("#remarkId").val();
+			var noteContent = $.trim($("#noteContent").val());
+			$.ajax({
+				url:"workbench/activity/updateRemark.do",
+				data:{"id":id,"noteContent":noteContent},
+				type:"post",
+				dataType:"json",
+				success:function (data){
+					//data{"success":tf,activityRemark}
+					if(data.success){
+						$("#editRemark"+id).html(data.activityRemark.noteContent)
+						$("#small"+id).html(data.activityRemark.editTime+"由"+data.activityRemark.editBy)
+						$("#editRemarkModal").modal("hide")
+					}
+					else {
+						alert("更新备注失败")
+					}
+				}
+			})
+
+		})
 	});
 	function showRemarkList(){
 
@@ -115,8 +138,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					html += '<div class="remarkDiv" id="'+n.id+'" style="height: 60px;">';
 					html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
 					html += '<div style="position: relative; top: -40px; left: 40px;" >';
-					html += '<h5>'+n.noteContent+'</h5>';
-					html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> '+(n.editFlag==0?n.createTime:n.editTime)+' 由'+(n.editFlag==0?n.createBy:n.editBy)+' </small>';
+					html += '<h5 id="editRemark'+n.id+'">'+n.noteContent+'</h5>';
+					html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;" id="small'+n.id+'"> '+(n.editFlag==0?n.createTime:n.editTime)+' 由'+(n.editFlag==0?n.createBy:n.editBy)+' </small>';
 					html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
 					html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+n.id+'\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
 					html += '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -147,7 +170,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		})
 	}
 	function editRemark(id){
-		alert(id)
+		//给隐藏域中的id也赋值，找到要修改的模态窗口对应的id
+		$("#remarkId").val(id);
+		//这次从前端直接铺数据
+		//取得存放备注的h5 id，为了避免与divid重复加上editRemark
+		var noteContent = $("#editRemark"+id).html();
+		//将取得的备注列表h5中的content信息赋给模态窗口中的noteContent
+		$("#noteContent").val(noteContent);
+		$("#editRemarkModal").modal("show");
 	}
 	
 </script>
