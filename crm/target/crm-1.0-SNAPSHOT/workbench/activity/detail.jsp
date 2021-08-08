@@ -153,21 +153,24 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		})
 	}
 	function deleteRemark(id){
-		$.ajax({
-			url:"workbench/activity/deleteRemark.do",
-			data:{"id":id},
-			type:"post",
-			dataType:"json",
-			success:function (data){
-				if(data.success){
-					alert("备注删除成功")
-					//这种方法删除备注，原有数据会存在
-					$("#"+id).remove();
-				}else {
-					alert("备注删除失败")
+		if(confirm("确定要删除备注吗")){
+			$.ajax({
+				url:"workbench/activity/deleteRemark.do",
+				data:{"id":id},
+				type:"post",
+				dataType:"json",
+				success:function (data){
+					if(data.success){
+						alert("备注删除成功")
+						//这种方法删除备注，原有数据会存在
+						$("#"+id).remove();
+					}else {
+						alert("备注删除失败")
+					}
 				}
-			}
-		})
+			})
+		}
+
 	}
 	function editRemark(id){
 		//给隐藏域中的id也赋值，找到要修改的模态窗口对应的id
