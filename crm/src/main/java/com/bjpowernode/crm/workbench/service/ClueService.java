@@ -1,6 +1,7 @@
 package com.bjpowernode.crm.workbench.service;
 
 import com.bjpowernode.crm.workbench.domain.Clue;
+import com.bjpowernode.crm.workbench.domain.Tran;
 
 public interface ClueService {
 
@@ -11,4 +12,7 @@ public interface ClueService {
     boolean unbond(String id);
 
     boolean bond(String clueId, String[] activityIds);
+
+
+    boolean convert(String clueId, Tran t, String createBy);
 }
