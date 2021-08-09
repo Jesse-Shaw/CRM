@@ -90,5 +90,7 @@
     <servlet-mapping>
         <servlet-name>TranController</servlet-name>
         <url-pattern>/workbench/transaction/add.do</url-pattern>
+        <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
+
     </servlet-mapping>
 </web-app>
