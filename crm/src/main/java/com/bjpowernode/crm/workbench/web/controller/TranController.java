@@ -14,9 +14,11 @@ import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import com.bjpowernode.crm.workbench.service.CustomerService;
+import com.bjpowernode.crm.workbench.service.TranService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
 import com.bjpowernode.crm.workbench.service.impl.ClueServiceImpl;
 import com.bjpowernode.crm.workbench.service.impl.CustomerServiceImpl;
+import com.bjpowernode.crm.workbench.service.impl.TranServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -34,10 +36,66 @@ public class TranController extends HttpServlet {
         String path = request.getServletPath();
         if ("/workbench/transaction/add.do".equals(path)) {
             add(request,response);
-        } else if ("/workbench/transaction/getCustomerName.do".equals(path)) {
+        }
+        else if ("/workbench/transaction/getCustomerName.do".equals(path)) {
             getCustomerName(request,response);
         }
+        else if ("/workbench/transaction/save.do".equals(path)) {
+        save(request,response);
+        }
+        else if ("/workbench/transaction/detail.do".equals(path)) {
+            detail(request,response);
+        }
 
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("跳转到详细信息页");
+        String id = request.getParameter("id");
+
+
+    }
+
+    private void save(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("执行添加交易的操作");
+        String id= UUIDUtil.getUUID();
+        String owner= request.getParameter("owner");
+        String money= request.getParameter("money");
+        String name= request.getParameter("name");
+        String expectedDate= request.getParameter("expectedDate");
+        String customerName= request.getParameter("customerName");//此处只有客户名称无id
+        String stage= request.getParameter("stage");
+        String type= request.getParameter("type");
+        String source= request.getParameter("source");
+        String activityId= request.getParameter("activityId");
+        String contactsId= request.getParameter("contactsId");
+        String createBy= ((User)request.getSession().getAttribute("user")).getName();
+        String createTime = DateTimeUtil.getSysTime();
+        String description= request.getParameter("description");
+        String contactSummary= request.getParameter("contactSummary");
+        String nextContactTime= request.getParameter("nextContactTime");
+        Tran t = new Tran();
+        t.setId(id);
+        t.setOwner(owner);
+        t.setMoney(money);
+        t.setName(name);
+        t.setExpectedDate(expectedDate);
+        t.setStage(stage);
+        t.setType(type);
+        t.setSource(source);
+        t.setActivityId(activityId);
+        t.setContactsId(contactsId);
+        t.setCreateBy(createBy);
+        t.setCreateTime(createTime);
+        t.setDescription(description);
+        t.setContactSummary(contactSummary);
+        t.setNextContactTime(nextContactTime);
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        boolean flag = tranService.save(t,customerName);
+        if (flag){
+            //request.getRequestDispatcher("workbench/transaction/index.jsp").forward(request,response);1.request域没存值，2.需要刷新新的页面
+            response.sendRedirect(request.getContextPath()+"/workbench/transaction/index.jsp");
+        }
     }
 
     private void getCustomerName(HttpServletRequest request, HttpServletResponse response) {
