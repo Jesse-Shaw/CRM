@@ -9,4 +9,6 @@ public interface TranHistoryDao {
     int save(TranHistory tranHistory);
 
     List<TranHistory> getHistoryListByTranId(String tranId);
+
+    int changeState(TranHistory th);
 }

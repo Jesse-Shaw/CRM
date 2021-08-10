@@ -77,4 +77,28 @@ public class TranServiceImpl implements TranService {
         List<TranHistory> tranHistoryList=tranHistoryDao.getHistoryListByTranId(tranId);
         return tranHistoryList;
     }
+
+    @Override
+    public boolean changeState(Tran t) {
+        boolean flag =true;
+        //改变交易阶段
+        int count =tranDao.changeState(t);
+        if (count!=1){
+            flag=false;
+        }
+        //伴随着交易阶段的改变，交易历史应该生产
+        TranHistory th = new TranHistory();
+        th.setMoney(t.getMoney());
+        th.setId(UUIDUtil.getUUID());
+        th.setCreateBy(t.getEditBy());
+        th.setCreateTime(t.getEditTime());
+        th.setTranId(t.getId());
+        th.setExpectedDate(t.getExpectedDate());
+        th.setStage(t.getStage());
+        int count2 = tranHistoryDao.save(th);
+        if (count2!=1){
+            flag=false;
+        }
+        return flag;
+    }
 }
