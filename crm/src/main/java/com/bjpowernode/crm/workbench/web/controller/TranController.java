@@ -7,10 +7,7 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
-import com.bjpowernode.crm.workbench.domain.Activity;
-import com.bjpowernode.crm.workbench.domain.Clue;
-import com.bjpowernode.crm.workbench.domain.Customer;
-import com.bjpowernode.crm.workbench.domain.Tran;
+import com.bjpowernode.crm.workbench.domain.*;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import com.bjpowernode.crm.workbench.service.CustomerService;
@@ -46,13 +43,43 @@ public class TranController extends HttpServlet {
         else if ("/workbench/transaction/detail.do".equals(path)) {
             detail(request,response);
         }
+        else if ("/workbench/transaction/getHistoryListByTranId.do".equals(path)) {
+            getHistoryListByTranId(request,response);
+        }
 
     }
 
-    private void detail(HttpServletRequest request, HttpServletResponse response) {
+    private void getHistoryListByTranId(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("根据交易ID获取相应的历史列表");
+        String tranId = request.getParameter("tranId");
+        TranService tranService = (TranService) ServiceFactory.getService(new TranServiceImpl());
+        List<TranHistory> tranHistoryList=tranService.getHistoryListByTranId(tranId);
+        Map<String,String> pMap= (Map<String, String>) this.getServletContext().getAttribute("pMap");
+        //将列表遍历
+        for (TranHistory tranHistory:tranHistoryList) {
+            String stage = tranHistory.getStage();
+            String possibility =pMap.get(stage);
+            tranHistory.setPossibility(possibility);
+        }
+        PrintJson.printJsonObj(response,tranHistoryList);
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("跳转到详细信息页");
         String id = request.getParameter("id");
+        TranService tranService= (TranService) ServiceFactory.getService(new TranServiceImpl());
+        Tran t = tranService.detail(id);
+        //处理可能性
+        /*
+          需要阶段t.stage和可能性之间的对应关系pMap
 
+        */
+        String stage = t.getStage();
+        Map<String,String> pMap= (Map<String, String>) this.getServletContext().getAttribute("pMap");
+        String possibility =pMap.get(stage);
+        t.setPossibility(possibility);
+        request.setAttribute("t",t);
+        request.getRequestDispatcher("/workbench/transaction/detail.jsp").forward(request,response);
 
     }
 
