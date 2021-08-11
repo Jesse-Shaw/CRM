@@ -2,6 +2,9 @@ package com.bjpowernode.crm.workbench.dao;
 
 import com.bjpowernode.crm.workbench.domain.Tran;
 
+import java.util.List;
+import java.util.Map;
+
 public interface TranDao {
     
 
@@ -10,4 +13,8 @@ public interface TranDao {
     Tran detail(String id);
 
     int changeState(Tran t);
+
+    int getTotal();
+
+    List<Map<String, Object>> getCharts();
 }
