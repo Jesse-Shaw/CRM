@@ -4,6 +4,12 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.TranDao">
+    <select id="getCharts" resultType="map">
+        select stage as name,count(*) as value from tbl_tran group by stage
+    </select>
+    <select id="getTotal" resultType="int">
+        select count(*) from tbl_tran
+    </select>
     <update id="changeState">
         update tbl_tran set stage=#{stage},editBy=#{editBy},editTime=#{editTime} where id=#{id}
     </update>
